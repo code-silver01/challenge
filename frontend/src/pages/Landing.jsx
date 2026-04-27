@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingCart, Zap, Brain, TrendingUp, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Zap, Brain, TrendingUp, ArrowRight, ShieldCheck, Camera, CheckCircle2 } from 'lucide-react';
 
 export default function Landing() {
   const { loginWithGoogle, enterDemoMode } = useAuth();
 
   const handleDemo = () => {
     enterDemoMode({
+      lifestyle: 'working professional',
       dietType: 'non-veg',
       cookingFrequency: 'rarely',
-      lifestyle: 'working professional',
       goal: 'eat healthier',
       onboarded: true,
       neverSuggest: [],
@@ -17,85 +17,115 @@ export default function Landing() {
   };
 
   const features = [
-    { icon: <ShoppingCart size={24} />, title: 'Smart Cart Parsing', desc: 'Paste your cart or scan a receipt — instant nutrition breakdown' },
-    { icon: <Brain size={24} />, title: 'Behavior Intelligence', desc: 'Learns your habits and spots patterns you might miss' },
-    { icon: <Zap size={24} />, title: 'AI Optimization', desc: '3-5 high-impact swaps, zero extra effort' },
-    { icon: <TrendingUp size={24} />, title: 'Visual Impact', desc: 'See before vs after — protein up, junk down, effort same' },
+    { icon: <Camera size={28} />, title: 'Smart Receipt Scanning', desc: 'Just take a photo of your grocery receipt or type out your list. Our AI instantly categorizes and analyzes every item.' },
+    { icon: <Brain size={28} />, title: 'Behavior Intelligence', desc: 'The system learns your shopping habits, detecting hidden patterns like high snack dependency or protein deficits.' },
+    { icon: <Zap size={28} />, title: 'Contextual AI Optimization', desc: 'Recommends 3-5 high-impact, low-effort swaps based on the season, time of day, and your willingness to cook.' },
+    { icon: <TrendingUp size={28} />, title: 'Visual Impact Charts', desc: 'See the precise projected improvement in your diet before you even buy the groceries.' },
+  ];
+
+  const steps = [
+    { num: '01', title: 'Upload or Type', desc: 'Input your grocery list into the app.' },
+    { num: '02', title: 'AI Analysis', desc: '4 discrete agents analyze nutrition, behavior, and context.' },
+    { num: '03', title: 'Review Swaps', desc: 'Get smart suggestions (e.g., swap chips for nuts).' },
+    { num: '04', title: 'Shop Smarter', desc: 'Make small changes with massive health impacts.' },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Hero */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-16 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="max-w-2xl"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 text-sm text-[var(--color-text-secondary)]">
-            <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
-            AI-Powered Grocery Intelligence
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* Hero Section */}
+      <div style={{ minHeight: '90vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 20px 60px', textAlign: 'center', position: 'relative' }}>
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} style={{ maxWidth: 800, width: '100%', zIndex: 10 }}>
+          
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 20px', borderRadius: 99, fontSize: 14, fontWeight: 600, color: 'var(--primary-light)', marginBottom: 24, border: '1px solid rgba(99,102,241,0.2)', background: 'rgba(99,102,241,0.05)' }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block', boxShadow: '0 0 10px var(--accent)' }} />
+            The Future of Grocery Shopping
           </div>
 
-          <h1 className="font-[var(--font-display)] text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-6">
-            Stop shopping on
-            <span className="bg-gradient-to-r from-[var(--color-primary-light)] to-[var(--color-accent)] bg-clip-text text-transparent"> autopilot</span>
+          <h1 className="font-heading" style={{ fontSize: 'clamp(40px, 8vw, 72px)', fontWeight: 800, lineHeight: 1.1, marginBottom: 24, letterSpacing: '-0.02em' }}>
+            Upgrade your diet without <br/>
+            <span style={{ background: 'linear-gradient(135deg, var(--primary-light), var(--accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              changing your routine.
+            </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-[var(--color-text-secondary)] mb-10 max-w-lg mx-auto leading-relaxed">
-            CartIQ analyzes your grocery cart and gives you the minimum changes for maximum nutritional impact. Same effort, better food.
+          <p style={{ fontSize: 'clamp(16px, 2.5vw, 22px)', color: 'var(--text-2)', marginBottom: 48, maxWidth: 650, margin: '0 auto 48px', lineHeight: 1.6 }}>
+            CartIQ is a multi-agent AI engine that analyzes your grocery cart and provides the minimum possible changes for maximum nutritional impact.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={loginWithGoogle}
-              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white font-semibold text-lg shadow-lg glow-primary cursor-pointer flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-              Sign in with Google
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={handleDemo}
-              className="px-8 py-4 rounded-2xl glass text-[var(--color-text-primary)] font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 hover:border-[var(--color-primary)]/40 transition-colors"
-            >
-              Try Demo
-              <ArrowRight size={20} />
-            </motion.button>
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-primary glow-primary" onClick={loginWithGoogle} style={{ fontSize: 18, padding: '18px 36px', borderRadius: 20 }}>
+              Get Started for Free
+            </button>
+            <button className="btn-glass" onClick={handleDemo} style={{ fontSize: 18, padding: '18px 36px', borderRadius: 20 }}>
+              View Interactive Demo <ArrowRight size={20} />
+            </button>
           </div>
-        </motion.div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24, marginTop: 40, color: 'var(--text-3)', fontSize: 14 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><ShieldCheck size={16} color="var(--primary)" /> Privacy First</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><CheckCircle2 size={16} color="var(--accent)" /> AI Powered</span>
+          </div>
 
-        {/* Features */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-20 max-w-5xl w-full px-4"
-        >
-          {features.map((f, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className="glass-card p-6 flex flex-col gap-3"
-            >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--color-primary)]/20 to-[var(--color-accent)]/10 flex items-center justify-center text-[var(--color-primary-light)]">
-                {f.icon}
-              </div>
-              <h3 className="font-[var(--font-display)] font-semibold text-lg">{f.title}</h3>
-              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{f.desc}</p>
-            </motion.div>
-          ))}
         </motion.div>
       </div>
 
-      {/* Footer */}
-      <footer className="text-center py-6 text-sm text-[var(--color-text-muted)]">
-        Built with AI agents on Google Cloud
+      {/* How it Works Section */}
+      <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.02)', borderTop: '1px solid var(--border-clr)', borderBottom: '1px solid var(--border-clr)' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 60 }}>
+            <h2 className="font-heading" style={{ fontSize: 36, fontWeight: 700, marginBottom: 16 }}>How CartIQ Works</h2>
+            <p style={{ color: 'var(--text-2)', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>A seamless pipeline designed to optimize your cart in seconds.</p>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 24 }}>
+            {steps.map((step, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="glass-card" style={{ padding: 32, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ fontSize: 48, fontWeight: 800, color: 'rgba(255,255,255,0.03)', position: 'absolute', top: 10, right: 10, fontFamily: 'var(--font-heading)' }}>
+                  {step.num}
+                </div>
+                <h3 className="font-heading" style={{ fontSize: 20, fontWeight: 700, marginBottom: 12, color: 'var(--text-1)' }}>{step.title}</h3>
+                <p style={{ color: 'var(--text-2)', lineHeight: 1.6, fontSize: 15 }}>{step.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Features Grid */}
+      <div style={{ padding: '100px 20px', maxWidth: 1000, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 60 }}>
+          <h2 className="font-heading" style={{ fontSize: 36, fontWeight: 700, marginBottom: 16 }}>Powerful Agentic Architecture</h2>
+          <p style={{ color: 'var(--text-2)', fontSize: 18, maxWidth: 600, margin: '0 auto' }}>Powered by 4 independent AI agents working together to analyze your behavior and suggest intelligent swaps.</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: 24 }}>
+          {features.map((f, i) => (
+            <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              className="glass-card" style={{ padding: 40, display: 'flex', flexDirection: 'column', gap: 16, transition: 'transform 0.3s', cursor: 'default' }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,214,160,0.1))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-light)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                {f.icon}
+              </div>
+              <h3 className="font-heading" style={{ fontWeight: 700, fontSize: 22 }}>{f.title}</h3>
+              <p style={{ fontSize: 16, color: 'var(--text-2)', lineHeight: 1.6 }}>{f.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div style={{ padding: '80px 20px', textAlign: 'center', background: 'linear-gradient(0deg, rgba(99,102,241,0.05) 0%, transparent 100%)' }}>
+        <h2 className="font-heading" style={{ fontSize: 32, fontWeight: 700, marginBottom: 24 }}>Ready to optimize your groceries?</h2>
+        <button className="btn-primary glow-primary" onClick={handleDemo} style={{ fontSize: 18, padding: '16px 36px', borderRadius: 20 }}>
+          Try the Demo Now
+        </button>
+      </div>
+
+      <footer style={{ textAlign: 'center', padding: '40px 20px', fontSize: 14, color: 'var(--text-3)', borderTop: '1px solid var(--border-clr)' }}>
+        CartIQ Assist &copy; 2024 · Built with AI agents on Google Cloud
       </footer>
     </div>
   );

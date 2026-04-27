@@ -1,200 +1,135 @@
 @import "tailwindcss";
 
-/* ========== CartIQ Assist Design System ========== */
-
-@theme {
-  --color-primary: #6366f1;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
-  --color-accent: #06d6a0;
-  --color-accent-dark: #05b384;
-  --color-danger: #ef4444;
-  --color-warning: #f59e0b;
-  --color-surface: #0f1117;
-  --color-surface-alt: #161923;
-  --color-surface-elevated: #1e2130;
-  --color-surface-card: #252838;
-  --color-border: #2a2d3e;
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
-  --color-add: #06d6a0;
-  --color-replace: #6366f1;
-  --color-remove: #ef4444;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+/* ========== CSS Custom Properties ========== */
+:root {
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --accent: #06d6a0;
+  --accent-dark: #05b384;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --surface: #0f1117;
+  --surface-alt: #161923;
+  --surface-elevated: #1e2130;
+  --surface-card: #252838;
+  --border-clr: #2a2d3e;
+  --text-1: #f1f5f9;
+  --text-2: #94a3b8;
+  --text-3: #64748b;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
 }
 
-/* ========== Base Styles ========== */
+/* ========== Reset & Base ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  font-family: var(--font-sans);
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  background-color: var(--surface);
+  color: var(--text-1);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border-clr); border-radius: 3px; }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-surface);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
-}
-
-/* ========== Glow Effects ========== */
-
-.glow-primary {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 60px rgba(99, 102, 241, 0.1);
-}
-
-.glow-accent {
-  box-shadow: 0 0 20px rgba(6, 214, 160, 0.3), 0 0 60px rgba(6, 214, 160, 0.1);
-}
-
-/* ========== Glass Effect ========== */
+/* ========== Utility Classes ========== */
+.font-heading { font-family: var(--font-heading); }
 
 .glass {
-  background: rgba(30, 33, 48, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(30, 33, 48, 0.7);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(99, 102, 241, 0.15);
 }
 
 .glass-card {
-  background: rgba(37, 40, 56, 0.5);
+  background: rgba(37, 40, 56, 0.6);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.12);
   border-radius: 16px;
 }
 
-/* ========== Gradient Backgrounds ========== */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.25), 0 0 60px rgba(99, 102, 241, 0.08);
+}
 
+.glow-accent {
+  box-shadow: 0 0 20px rgba(6, 214, 160, 0.25), 0 0 60px rgba(6, 214, 160, 0.08);
+}
+
+/* ========== Background ========== */
 .gradient-mesh {
-  background: 
+  background:
     radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 20%, rgba(6, 214, 160, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse at 60% 80%, rgba(239, 68, 68, 0.05) 0%, transparent 50%),
-    var(--color-surface);
+    var(--surface);
 }
-
-.gradient-hero {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 214, 160, 0.1) 50%, rgba(99, 102, 241, 0.05) 100%);
-}
-
-/* ========== Animated Background Orbs ========== */
 
 .bg-orb {
   position: fixed;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.4;
+  opacity: 0.35;
   pointer-events: none;
   z-index: 0;
 }
+.bg-orb-1 { width: 400px; height: 400px; background: rgba(99, 102, 241, 0.15); top: -100px; left: -100px; animation: orb-float 20s ease-in-out infinite; }
+.bg-orb-2 { width: 300px; height: 300px; background: rgba(6, 214, 160, 0.1); bottom: -50px; right: -50px; animation: orb-float 25s ease-in-out infinite reverse; }
+.bg-orb-3 { width: 250px; height: 250px; background: rgba(245, 158, 11, 0.08); top: 50%; left: 50%; animation: orb-float 30s ease-in-out infinite; }
 
-.bg-orb-1 {
-  width: 400px;
-  height: 400px;
-  background: rgba(99, 102, 241, 0.15);
-  top: -100px;
-  left: -100px;
-  animation: float 20s ease-in-out infinite;
-}
-
-.bg-orb-2 {
-  width: 300px;
-  height: 300px;
-  background: rgba(6, 214, 160, 0.1);
-  bottom: -50px;
-  right: -50px;
-  animation: float 25s ease-in-out infinite reverse;
-}
-
-.bg-orb-3 {
-  width: 250px;
-  height: 250px;
-  background: rgba(245, 158, 11, 0.08);
-  top: 50%;
-  left: 50%;
-  animation: float 30s ease-in-out infinite;
-}
-
-@keyframes float {
+@keyframes orb-float {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(30px, -30px) scale(1.05); }
   50% { transform: translate(-20px, 20px) scale(0.95); }
   75% { transform: translate(15px, 15px) scale(1.02); }
 }
 
-/* ========== Pulse Ring Animation ========== */
+/* ========== Badges ========== */
+.badge-add { background: rgba(6, 214, 160, 0.15); color: #06d6a0; border: 1px solid rgba(6, 214, 160, 0.3); }
+.badge-replace { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+.badge-remove { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 1; }
-  80%, 100% { transform: scale(2); opacity: 0; }
+/* ========== Buttons ========== */
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px; border-radius: 16px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; font-weight: 600; font-size: 16px;
+  transition: transform 0.15s, box-shadow 0.2s;
 }
+.btn-primary:hover { transform: scale(1.03); box-shadow: 0 0 20px rgba(99,102,241,0.3); }
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-.pulse-ring::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: inherit;
-  border: 2px solid currentColor;
-  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+.btn-glass {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px; border-radius: 16px; cursor: pointer;
+  background: rgba(30, 33, 48, 0.6); backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  color: var(--text-1); font-weight: 600; font-size: 16px;
+  transition: transform 0.15s, border-color 0.2s;
 }
-
-/* ========== Badge Styles ========== */
-
-.badge-add {
-  background: rgba(6, 214, 160, 0.15);
-  color: #06d6a0;
-  border: 1px solid rgba(6, 214, 160, 0.3);
-}
-
-.badge-replace {
-  background: rgba(99, 102, 241, 0.15);
-  color: #818cf8;
-  border: 1px solid rgba(99, 102, 241, 0.3);
-}
-
-.badge-remove {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-/* ========== Chart animations ========== */
-
-@keyframes chart-fill {
-  from { width: 0; }
-  to { width: var(--target-width); }
-}
+.btn-glass:hover { transform: scale(1.03); border-color: rgba(99, 102, 241, 0.4); }
 
 /* ========== Noise Texture ========== */
-
 .noise-bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
+  content: ''; position: fixed; inset: 0; opacity: 0.025; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* ========== Loading Spinner ========== */
+.spinner { width: 48px; height: 48px; border: 4px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }

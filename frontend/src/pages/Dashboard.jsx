@@ -11,32 +11,31 @@ import CartSummary from '../components/CartSummary';
 import InsightCard from '../components/InsightCard';
 import SuggestionCard from '../components/SuggestionCard';
 import ImpactChart from '../components/ImpactChart';
-import { Sparkles, RotateCcw, Loader2 } from 'lucide-react';
+import { Sparkles, RotateCcw } from 'lucide-react';
 
 export default function Dashboard() {
   const { profile } = useAuth();
   const cart = useCart();
   const [analyzing, setAnalyzing] = useState(false);
 
-  const handleAnalyze = useCallback(async (text) => {
+  const runAnalysis = useCallback(async (text) => {
     setAnalyzing(true);
     cart.setRawInput(text);
 
-    // Agent 1: Parse cart
+    // Small delay so the loading overlay renders
+    await new Promise(r => setTimeout(r, 300));
+
     const items = await parseCart(text);
     cart.setParsedItems(items);
     const stats = computeCartStats(items);
     cart.setCartStats(stats);
 
-    // Agent 2: Behavior analysis
     const behavior = analyzeBehavior([]);
     cart.setBehaviorProfile(behavior);
 
-    // Agent 3: Context signals
     const ctx = getContextSignals(profile || {});
     cart.setContextSignals(ctx);
 
-    // Agent 4: Optimization
     const suggs = generateOptimizations(items, behavior, ctx, profile?.neverSuggest || []);
     cart.setSuggestions(suggs);
 
@@ -47,87 +46,61 @@ export default function Dashboard() {
     setAnalyzing(false);
   }, [profile, cart]);
 
-  const handleReset = () => {
-    cart.reset();
-  };
+  const handleReset = () => cart.reset();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 pb-20">
+    <div style={{ maxWidth: 860, margin: '0 auto', padding: '24px 20px 80px' }}>
       <AnimatePresence mode="wait">
         {cart.step === 'input' && (
-          <motion.div
-            key="input"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="text-center mb-8">
-              <h1 className="font-[var(--font-display)] text-3xl sm:text-4xl font-bold mb-3">
+          <motion.div key="input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+            <div style={{ textAlign: 'center', marginBottom: 32 }}>
+              <h1 className="font-heading" style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 800, marginBottom: 12 }}>
                 What's in your cart?
               </h1>
-              <p className="text-[var(--color-text-secondary)] text-lg">
+              <p style={{ fontSize: 18, color: 'var(--text-2)' }}>
                 Paste your grocery list and let AI optimize it
               </p>
             </div>
-            <CartInput onAnalyze={handleAnalyze} analyzing={analyzing} />
+            <CartInput onAnalyze={runAnalysis} analyzing={analyzing} />
           </motion.div>
         )}
 
         {cart.step === 'results' && (
-          <motion.div
-            key="results"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
+          <motion.div key="results" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <div>
-                <h1 className="font-[var(--font-display)] text-2xl sm:text-3xl font-bold flex items-center gap-2">
-                  <Sparkles size={24} className="text-[var(--color-accent)]" />
+                <h1 className="font-heading" style={{ fontSize: 28, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Sparkles size={24} color="var(--accent)" />
                   Cart Analysis
                 </h1>
-                <p className="text-[var(--color-text-secondary)] mt-1">
+                <p style={{ color: 'var(--text-2)', marginTop: 4, fontSize: 14 }}>
                   {cart.parsedItems.length} items analyzed · {cart.suggestions.length} optimizations found
                 </p>
               </div>
-              <button
-                onClick={handleReset}
-                className="px-4 py-2 rounded-xl glass text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] flex items-center gap-2 cursor-pointer transition-colors"
-              >
+              <button className="btn-glass" onClick={handleReset} style={{ padding: '10px 20px', fontSize: 14 }}>
                 <RotateCcw size={16} /> New Cart
               </button>
             </div>
 
-            {/* Cart Summary */}
-            <CartSummary items={cart.parsedItems} stats={cart.cartStats} />
-
-            {/* Insight Card */}
-            {cart.behaviorProfile && cart.contextSignals && (
-              <InsightCard behavior={cart.behaviorProfile} context={cart.contextSignals} />
-            )}
-
-            {/* Optimization Suggestions */}
-            {cart.suggestions.length > 0 && (
-              <div>
-                <h2 className="font-[var(--font-display)] text-xl font-semibold mb-4">
-                  Recommended Changes
-                </h2>
-                <div className="space-y-3">
-                  {cart.suggestions.map((s, i) => (
-                    <SuggestionCard key={i} suggestion={s} index={i} />
-                  ))}
+            {/* Results sections */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <CartSummary items={cart.parsedItems} stats={cart.cartStats} />
+              {cart.behaviorProfile && cart.contextSignals && (
+                <InsightCard behavior={cart.behaviorProfile} context={cart.contextSignals} />
+              )}
+              {cart.suggestions.length > 0 && (
+                <div>
+                  <h2 className="font-heading" style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Recommended Changes</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {cart.suggestions.map((s, i) => (
+                      <SuggestionCard key={i} suggestion={s} index={i} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {/* Before vs After */}
-            {cart.impact && (
-              <ImpactChart impact={cart.impact} />
-            )}
+              )}
+              {cart.impact && <ImpactChart impact={cart.impact} />}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -135,17 +108,13 @@ export default function Dashboard() {
       {/* Loading overlay */}
       <AnimatePresence>
         {analyzing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-surface)]/80 backdrop-blur-sm"
-          >
-            <div className="glass-card p-8 flex flex-col items-center gap-4">
-              <Loader2 size={40} className="text-[var(--color-primary)] animate-spin" />
-              <div className="text-center">
-                <p className="font-[var(--font-display)] font-semibold text-lg">Analyzing your cart...</p>
-                <p className="text-[var(--color-text-secondary)] text-sm mt-1">Running 4 AI agents</p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,17,23,0.85)', backdropFilter: 'blur(8px)' }}>
+            <div className="glass-card" style={{ padding: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+              <div className="spinner" />
+              <div style={{ textAlign: 'center' }}>
+                <p className="font-heading" style={{ fontWeight: 600, fontSize: 18 }}>Analyzing your cart...</p>
+                <p style={{ color: 'var(--text-2)', fontSize: 14, marginTop: 4 }}>Running 4 AI agents</p>
               </div>
             </div>
           </motion.div>

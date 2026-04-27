@@ -3,40 +3,30 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { saveUserProfile } from '../services/dataLayer';
-import { Salad, Beef, Leaf, ChefHat, Clock, Zap, Heart, DollarSign, Recycle, Dumbbell, ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { Salad, Beef, Leaf, ChefHat, Clock, Zap, Heart, DollarSign, Recycle, Dumbbell, ArrowRight, ArrowLeft, Check, Briefcase, Laptop, Home } from 'lucide-react';
 
 const STEPS = [
-  {
-    title: 'What do you eat?',
-    subtitle: 'This helps us filter suggestions',
-    field: 'dietType',
-    options: [
-      { value: 'veg', label: 'Vegetarian', icon: <Salad size={28} />, color: '#06d6a0' },
-      { value: 'non-veg', label: 'Non-Vegetarian', icon: <Beef size={28} />, color: '#ef4444' },
-      { value: 'vegan', label: 'Vegan', icon: <Leaf size={28} />, color: '#22c55e' },
-    ],
-  },
-  {
-    title: 'How often do you cook?',
-    subtitle: 'We won\'t suggest complex recipes if you rarely cook',
-    field: 'cookingFrequency',
-    options: [
-      { value: 'daily', label: 'Daily', icon: <ChefHat size={28} />, color: '#06d6a0' },
-      { value: 'a few times a week', label: 'A few times/week', icon: <Clock size={28} />, color: '#f59e0b' },
-      { value: 'rarely', label: 'Rarely', icon: <Zap size={28} />, color: '#ef4444' },
-    ],
-  },
-  {
-    title: 'What\'s your goal?',
-    subtitle: 'We\'ll prioritize suggestions accordingly',
-    field: 'goal',
-    options: [
-      { value: 'eat healthier', label: 'Eat Healthier', icon: <Heart size={28} />, color: '#06d6a0' },
-      { value: 'save money', label: 'Save Money', icon: <DollarSign size={28} />, color: '#f59e0b' },
-      { value: 'reduce waste', label: 'Reduce Waste', icon: <Recycle size={28} />, color: '#22c55e' },
-      { value: 'build muscle', label: 'Build Muscle', icon: <Dumbbell size={28} />, color: '#6366f1' },
-    ],
-  },
+  { title: "What's your primary occupation?", subtitle: "Helps us understand your daily schedule and lifestyle", field: 'lifestyle', options: [
+    { value: 'student', label: 'Student', icon: <Laptop size={28} />, color: '#6366f1' },
+    { value: 'working professional', label: 'Working Professional', icon: <Briefcase size={28} />, color: '#06d6a0' },
+    { value: 'homemaker', label: 'Homemaker', icon: <Home size={28} />, color: '#f59e0b' },
+  ]},
+  { title: "What do you eat?", subtitle: "This helps us filter suggestions", field: 'dietType', options: [
+    { value: 'veg', label: 'Vegetarian', icon: <Salad size={28} />, color: '#06d6a0' },
+    { value: 'non-veg', label: 'Non-Vegetarian', icon: <Beef size={28} />, color: '#ef4444' },
+    { value: 'vegan', label: 'Vegan', icon: <Leaf size={28} />, color: '#22c55e' },
+  ]},
+  { title: "How often do you cook?", subtitle: "We won't suggest complex recipes if you rarely cook", field: 'cookingFrequency', options: [
+    { value: 'daily', label: 'Daily', icon: <ChefHat size={28} />, color: '#06d6a0' },
+    { value: 'a few times a week', label: 'A few times/week', icon: <Clock size={28} />, color: '#f59e0b' },
+    { value: 'rarely', label: 'Rarely', icon: <Zap size={28} />, color: '#ef4444' },
+  ]},
+  { title: "What's your primary goal?", subtitle: "We'll prioritize suggestions accordingly", field: 'goal', options: [
+    { value: 'eat healthier', label: 'Eat Healthier', icon: <Heart size={28} />, color: '#06d6a0' },
+    { value: 'save money', label: 'Save Money', icon: <DollarSign size={28} />, color: '#f59e0b' },
+    { value: 'reduce waste', label: 'Reduce Waste', icon: <Recycle size={28} />, color: '#22c55e' },
+    { value: 'build muscle', label: 'Build Muscle', icon: <Dumbbell size={28} />, color: '#6366f1' },
+  ]},
 ];
 
 export default function Onboarding() {
@@ -49,23 +39,14 @@ export default function Onboarding() {
   const step = STEPS[current];
   const selected = answers[step.field];
 
-  const handleSelect = (value) => {
-    setAnswers(prev => ({ ...prev, [step.field]: value }));
-  };
-
   const handleNext = async () => {
     if (current < STEPS.length - 1) {
       setCurrent(c => c + 1);
     } else {
       setSaving(true);
-      const profile = {
-        ...answers,
-        lifestyle: 'working professional',
-        onboarded: true,
-        neverSuggest: [],
-      };
+      const profile = { ...answers, onboarded: true, neverSuggest: [] };
       if (!demoMode) {
-        try { await saveUserProfile(user.uid, profile); } catch (e) { console.warn('Firestore save failed:', e); }
+        try { await saveUserProfile(user.uid, profile); } catch (e) { console.warn('Save failed:', e); }
       }
       setProfile(profile);
       setSaving(false);
@@ -73,19 +54,15 @@ export default function Onboarding() {
     }
   };
 
-  const handleBack = () => {
-    if (current > 0) setCurrent(c => c - 1);
-  };
-
   return (
-    <div className="min-h-[calc(100vh-60px)] flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-lg">
-        {/* Progress */}
-        <div className="flex gap-2 mb-8">
+    <div style={{ minHeight: 'calc(100vh - 60px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 20px' }}>
+      <div style={{ width: '100%', maxWidth: 500 }}>
+        {/* Progress bar */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
           {STEPS.map((_, i) => (
-            <div key={i} className="flex-1 h-1.5 rounded-full overflow-hidden bg-[var(--color-surface-elevated)]">
+            <div key={i} style={{ flex: 1, height: 6, borderRadius: 3, overflow: 'hidden', background: 'var(--surface-elevated)' }}>
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]"
+                style={{ height: '100%', borderRadius: 3, background: 'linear-gradient(90deg, var(--primary), var(--accent))' }}
                 initial={{ width: 0 }}
                 animate={{ width: i <= current ? '100%' : '0%' }}
                 transition={{ duration: 0.4 }}
@@ -95,70 +72,53 @@ export default function Onboarding() {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div
-            key={current}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h2 className="font-[var(--font-display)] text-2xl sm:text-3xl font-bold mb-2">{step.title}</h2>
-            <p className="text-[var(--color-text-secondary)] mb-8">{step.subtitle}</p>
+          <motion.div key={current} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.3 }}>
+            <h2 className="font-heading" style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>{step.title}</h2>
+            <p style={{ color: 'var(--text-2)', marginBottom: 32 }}>{step.subtitle}</p>
 
-            <div className="grid grid-cols-1 gap-3">
-              {step.options.map(opt => (
-                <motion.button
-                  key={opt.value}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleSelect(opt.value)}
-                  className={`w-full p-5 rounded-2xl flex items-center gap-4 text-left cursor-pointer transition-all duration-200 ${
-                    selected === opt.value
-                      ? 'glass border-[var(--color-primary)]/50 glow-primary'
-                      : 'glass-card hover:border-[var(--color-border)]'
-                  }`}
-                >
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: `${opt.color}15`, color: opt.color }}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {step.options.map(opt => {
+                const isSelected = selected === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setAnswers(prev => ({ ...prev, [step.field]: opt.value }))}
+                    className={isSelected ? 'glow-primary' : ''}
+                    style={{
+                      width: '100%', padding: 20, borderRadius: 16, display: 'flex', alignItems: 'center', gap: 16,
+                      textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s',
+                      background: isSelected ? 'rgba(99,102,241,0.12)' : 'rgba(37,40,56,0.5)',
+                      border: isSelected ? '1px solid rgba(99,102,241,0.4)' : '1px solid rgba(99,102,241,0.1)',
+                      color: 'var(--text-1)',
+                    }}
                   >
-                    {opt.icon}
-                  </div>
-                  <span className="font-semibold text-lg">{opt.label}</span>
-                  {selected === opt.value && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="ml-auto w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center"
-                    >
-                      <Check size={16} className="text-white" />
-                    </motion.div>
-                  )}
-                </motion.button>
-              ))}
+                    <div style={{ width: 56, height: 56, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${opt.color}18`, color: opt.color, flexShrink: 0 }}>
+                      {opt.icon}
+                    </div>
+                    <span style={{ fontWeight: 600, fontSize: 17 }}>{opt.label}</span>
+                    {isSelected && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ marginLeft: 'auto', width: 32, height: 32, borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Check size={16} color="#fff" />
+                      </motion.div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation */}
-        <div className="flex justify-between mt-8">
-          <button
-            onClick={handleBack}
-            disabled={current === 0}
-            className="px-6 py-3 rounded-xl text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer transition-colors"
-          >
+        {/* Nav buttons */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32 }}>
+          <button onClick={() => current > 0 && setCurrent(c => c - 1)} disabled={current === 0}
+            style={{ padding: '12px 24px', borderRadius: 12, background: 'none', border: 'none', color: current === 0 ? 'var(--text-3)' : 'var(--text-2)', cursor: current === 0 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, opacity: current === 0 ? 0.3 : 1 }}>
             <ArrowLeft size={18} /> Back
           </button>
-          <motion.button
-            whileHover={{ scale: selected ? 1.03 : 1 }}
-            whileTap={{ scale: selected ? 0.97 : 1 }}
-            onClick={handleNext}
-            disabled={!selected || saving}
-            className="px-8 py-3 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer shadow-lg"
-          >
+          <button className="btn-primary" onClick={handleNext} disabled={!selected || saving}
+            style={{ padding: '12px 32px', opacity: !selected ? 0.4 : 1 }}>
             {saving ? 'Saving...' : current === STEPS.length - 1 ? 'Get Started' : 'Next'}
             <ArrowRight size={18} />
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>

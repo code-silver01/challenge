@@ -10,23 +10,23 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center gradient-mesh">
+      <div className="gradient-mesh" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="bg-orb bg-orb-1" />
         <div className="bg-orb bg-orb-2" />
-        <div className="flex flex-col items-center gap-4 z-10">
-          <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[var(--color-text-secondary)] font-medium">Loading CartIQ...</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, zIndex: 10 }}>
+          <div className="spinner" />
+          <p style={{ color: 'var(--text-2)', fontWeight: 500 }}>Loading CartIQ...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen gradient-mesh noise-bg relative">
+    <div className="gradient-mesh noise-bg" style={{ minHeight: '100vh', position: 'relative' }}>
       <div className="bg-orb bg-orb-1" />
       <div className="bg-orb bg-orb-2" />
       <div className="bg-orb bg-orb-3" />
-      <div className="relative z-10">
+      <div style={{ position: 'relative', zIndex: 10 }}>
         {user && <Navbar />}
         <Routes>
           <Route path="/" element={!user ? <Landing /> : (profile?.onboarded ? <Navigate to="/dashboard" /> : <Navigate to="/onboarding" />)} />

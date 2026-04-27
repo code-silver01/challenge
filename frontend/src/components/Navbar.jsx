@@ -7,29 +7,31 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <nav className="glass sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
-      <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 cursor-pointer">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex items-center justify-center">
-          <ShoppingCart size={18} className="text-white" />
+    <nav className="glass" style={{ position: 'sticky', top: 0, zIndex: 50, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <button onClick={() => navigate('/dashboard')} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}>
+        <div style={{ width: 36, height: 36, borderRadius: 12, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <ShoppingCart size={18} color="#fff" />
         </div>
-        <span className="font-[var(--font-display)] font-bold text-lg tracking-tight">
-          Cart<span className="text-[var(--color-accent)]">IQ</span>
+        <span className="font-heading" style={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.02em', color: 'var(--text-1)' }}>
+          Cart<span style={{ color: 'var(--accent)' }}>IQ</span>
         </span>
       </button>
 
-      <div className="flex items-center gap-3">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {demoMode && (
-          <span className="text-xs px-2 py-1 rounded-full bg-[var(--color-warning)]/20 text-[var(--color-warning)] font-medium">
+          <span style={{ fontSize: 12, padding: '4px 10px', borderRadius: 99, background: 'rgba(245,158,11,0.2)', color: 'var(--warning)', fontWeight: 500 }}>
             Demo Mode
           </span>
         )}
-        <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: 'var(--text-2)' }}>
           <User size={16} />
-          <span className="hidden sm:inline">{user?.displayName || user?.email || 'User'}</span>
+          <span>{user?.displayName || user?.email || 'User'}</span>
         </div>
         <button
           onClick={logout}
-          className="p-2 rounded-lg hover:bg-[var(--color-surface-elevated)] transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-danger)] cursor-pointer"
+          style={{ padding: 8, borderRadius: 8, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', transition: 'color 0.2s' }}
+          onMouseEnter={e => e.target.style.color = 'var(--danger)'}
+          onMouseLeave={e => e.target.style.color = 'var(--text-3)'}
           title="Sign out"
         >
           <LogOut size={18} />

@@ -1,93 +1,100 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ThumbsUp, ThumbsDown, ArrowRight, Plus, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { addToNeverSuggest, saveSuggestionFeedback } from '../services/dataLayer';
-import { Plus, ArrowRightLeft, Trash2, ThumbsUp, ThumbsDown, Check } from 'lucide-react';
+import { addToNeverSuggest } from '../services/dataLayer';
 
-const TYPE_CONFIG = {
-  ADD: { icon: <Plus size={16} />, class: 'badge-add', label: 'ADD' },
-  REPLACE: { icon: <ArrowRightLeft size={16} />, class: 'badge-replace', label: 'REPLACE' },
-  REMOVE: { icon: <Trash2 size={16} />, class: 'badge-remove', label: 'REMOVE' },
+const BADGE_MAP = {
+  'ADD': { icon: <Plus size={14} />, class: 'badge-add', color: '#06d6a0' },
+  'REPLACE': { icon: <ArrowRight size={14} />, class: 'badge-replace', color: '#818cf8' },
+  'REMOVE': { icon: <X size={14} />, class: 'badge-remove', color: '#ef4444' },
 };
 
 export default function SuggestionCard({ suggestion, index }) {
-  const { user, demoMode } = useAuth();
-  const [feedback, setFeedback] = useState(null); // 'up' | 'down' | null
-  const config = TYPE_CONFIG[suggestion.type] || TYPE_CONFIG.ADD;
+  const { user, demoMode, profile, setProfile } = useAuth();
+  const [feedback, setFeedback] = useState(null);
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) return null;
 
   const handleFeedback = async (type) => {
     setFeedback(type);
-    if (!demoMode && user?.uid) {
+    if (type === 'down' && user && !demoMode) {
       try {
-        await saveSuggestionFeedback(user.uid, suggestion, type === 'up');
-        if (type === 'down') {
-          const item = suggestion.replacement || suggestion.item;
-          await addToNeverSuggest(user.uid, item);
-        }
-      } catch (e) { console.warn('Feedback save failed:', e); }
+        const itemName = suggestion.replacement || suggestion.item;
+        const newNever = [...(profile?.neverSuggest || []), itemName];
+        await addToNeverSuggest(user.uid, itemName);
+        setProfile(p => ({ ...p, neverSuggest: newNever }));
+      } catch (e) {
+        console.warn('Feedback save failed', e);
+      }
+      setTimeout(() => setDismissed(true), 1500);
+    } else if (type === 'down' && demoMode) {
+      setTimeout(() => setDismissed(true), 1500);
     }
   };
 
-  const buildDescription = () => {
-    if (suggestion.type === 'REPLACE') {
-      return `Swap ${suggestion.item} → ${suggestion.replacement}`;
-    }
-    if (suggestion.type === 'REMOVE') {
-      return `Remove ${suggestion.item}`;
-    }
-    return `Add ${suggestion.item}`;
-  };
+  const badge = BADGE_MAP[suggestion.type] || BADGE_MAP.ADD;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.3 }}
-      className="glass-card p-4 sm:p-5 flex items-start gap-4 group hover:border-[var(--color-primary)]/30 transition-colors"
-    >
-      {/* Badge */}
-      <div className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase flex items-center gap-1 shrink-0 ${config.class}`}>
-        {config.icon}
-        {config.label}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-base">{buildDescription()}</p>
-        <p className="text-sm text-[var(--color-text-secondary)] mt-1">{suggestion.reason}</p>
-        {suggestion.proteinDelta > 0 && (
-          <span className="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
-            +{suggestion.proteinDelta}g protein/week
-          </span>
-        )}
-      </div>
-
-      {/* Feedback */}
-      <div className="flex flex-col gap-1 shrink-0">
-        {feedback ? (
-          <div className="flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-            <Check size={14} className="text-[var(--color-accent)]" />
-            {feedback === 'down' ? "Won't suggest again" : 'Noted!'}
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}
+      className="glass-card" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <span className={badge.class} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {badge.icon} {suggestion.type}
+            </span>
+            {suggestion.proteinDelta > 0 && (
+              <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>+{suggestion.proteinDelta}g Protein</span>
+            )}
           </div>
-        ) : (
-          <>
-            <button
-              onClick={() => handleFeedback('up')}
-              className="p-2 rounded-lg hover:bg-[var(--color-accent)]/15 text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors cursor-pointer"
-              title="Good suggestion"
-            >
-              <ThumbsUp size={16} />
-            </button>
-            <button
-              onClick={() => handleFeedback('down')}
-              className="p-2 rounded-lg hover:bg-[var(--color-danger)]/15 text-[var(--color-text-muted)] hover:text-[var(--color-danger)] transition-colors cursor-pointer"
-              title="Don't suggest this"
-            >
-              <ThumbsDown size={16} />
-            </button>
-          </>
-        )}
+          
+          <div className="font-heading" style={{ fontSize: 18, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            {suggestion.type === 'REPLACE' ? (
+              <>
+                <span style={{ textDecoration: 'line-through', color: 'var(--text-3)' }}>{suggestion.item}</span>
+                <ArrowRight size={18} color="var(--text-3)" />
+                <span style={{ color: badge.color }}>{suggestion.replacement}</span>
+              </>
+            ) : suggestion.type === 'REMOVE' ? (
+              <span style={{ textDecoration: 'line-through', color: 'var(--danger)' }}>{suggestion.item}</span>
+            ) : (
+              <span style={{ color: badge.color }}>{suggestion.item}</span>
+            )}
+          </div>
+          
+          <p style={{ color: 'var(--text-2)', fontSize: 14, marginTop: 6, lineHeight: 1.5 }}>
+            {suggestion.reason}
+          </p>
+        </div>
+
+        {/* Feedback buttons */}
+        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+          <button onClick={() => handleFeedback('up')} disabled={feedback !== null}
+            style={{ padding: 8, borderRadius: 8, border: 'none', cursor: feedback ? 'default' : 'pointer', transition: 'all 0.2s',
+              background: feedback === 'up' ? 'rgba(6,214,160,0.2)' : 'rgba(255,255,255,0.05)',
+              color: feedback === 'up' ? '#06d6a0' : 'var(--text-3)' }}>
+            <ThumbsUp size={16} />
+          </button>
+          <button onClick={() => handleFeedback('down')} disabled={feedback !== null}
+            style={{ padding: 8, borderRadius: 8, border: 'none', cursor: feedback ? 'default' : 'pointer', transition: 'all 0.2s',
+              background: feedback === 'down' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.05)',
+              color: feedback === 'down' ? '#ef4444' : 'var(--text-3)' }}>
+            <ThumbsDown size={16} />
+          </button>
+        </div>
       </div>
+
+      <AnimatePresence>
+        {feedback === 'down' && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+            style={{ fontSize: 13, color: 'var(--danger)', background: 'rgba(239,68,68,0.1)', padding: '8px 12px', borderRadius: 8 }}>
+            Got it. We won't suggest {suggestion.replacement || suggestion.item} again.
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
