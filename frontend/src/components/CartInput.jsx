@@ -106,7 +106,8 @@ export default function CartInput({ onAnalyze, analyzing }) {
               <input {...getInputProps()} />
               <Upload size={40} color="var(--text-3)" style={{ margin: '0 auto 16px' }} />
               <p style={{ color: 'var(--text-2)', fontWeight: 500 }}>{isDragActive ? 'Drop your receipt here' : 'Drag & drop a grocery receipt'}</p>
-              <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 8 }}>or click to browse · PNG, JPG, WEBP</p>
+              <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 8, marginBottom: 16 }}>or click to browse · PNG, JPG, WEBP</p>
+              <a href="/demo-receipt.png" download="demo-receipt.png" onClick={(e) => e.stopPropagation()} style={{ fontSize: 13, color: 'var(--primary-light)', textDecoration: 'underline', position: 'relative', zIndex: 10 }}>Download a sample receipt</a>
             </div>
           ) : (
             <div className="glass-card" style={{ padding: 24 }}>

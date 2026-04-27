@@ -7,12 +7,7 @@ export default function Landing() {
 
   const handleDemo = () => {
     enterDemoMode({
-      lifestyle: 'working professional',
-      dietType: 'non-veg',
-      cookingFrequency: 'rarely',
-      goal: 'eat healthier',
-      onboarded: true,
-      neverSuggest: [],
+      onboarded: false,
     });
   };
 
@@ -53,7 +48,7 @@ export default function Landing() {
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary glow-primary" onClick={loginWithGoogle} style={{ fontSize: 18, padding: '18px 36px', borderRadius: 20 }}>
+            <button className="btn-primary glow-primary" onClick={handleDemo} style={{ fontSize: 18, padding: '18px 36px', borderRadius: 20 }}>
               Get Started for Free
             </button>
             <button className="btn-glass" onClick={handleDemo} style={{ fontSize: 18, padding: '18px 36px', borderRadius: 20 }}>
