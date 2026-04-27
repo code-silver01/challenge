@@ -164,23 +164,24 @@ VITE_FIREBASE_MESSAGING_ID=000000000
 VITE_FIREBASE_APP_ID=1:000:web:000
 ```
 
-### Cloud Run Deployment
-Each backend service has a Dockerfile. Deploy with:
+### Cloud Build & Cloud Run Deployment
+We've included a `cloudbuild.yaml` file that automatically builds and pushes all 5 microservice containers at once.
 
 ```bash
-# Set your project
+# 1. Set your project
 export PROJECT_ID=your-gcp-project
+gcloud config set project $PROJECT_ID
 
-# Build and deploy each service
+# 2. Submit the build to Cloud Build (builds all 5 images)
+gcloud builds submit --config cloudbuild.yaml .
+
+# 3. Deploy each service to Cloud Run
 for service in orchestrator cart-parser behavior-agent context-engine optimization; do
-  cd backend/$service
-  gcloud builds submit --tag gcr.io/$PROJECT_ID/cartiq-$service
   gcloud run deploy cartiq-$service \
     --image gcr.io/$PROJECT_ID/cartiq-$service \
     --platform managed \
     --region us-central1 \
     --allow-unauthenticated
-  cd ../..
 done
 ```
 
