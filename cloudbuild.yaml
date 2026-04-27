@@ -1,28 +1,35 @@
 steps:
-  # 1. Build Orchestrator
+  # Build all 5 backend services
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-orchestrator', './backend/orchestrator']
-    id: 'build-orchestrator'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-orchestrator', 'backend/orchestrator']
 
-  # 2. Build Cart Parser
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-cart-parser', './backend/cart-parser']
-    id: 'build-cart-parser'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-cart-parser', 'backend/cart-parser']
 
-  # 3. Build Behavior Agent
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-behavior-agent', './backend/behavior-agent']
-    id: 'build-behavior-agent'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-behavior-agent', 'backend/behavior-agent']
 
-  # 4. Build Context Engine
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-context-engine', './backend/context-engine']
-    id: 'build-context-engine'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-context-engine', 'backend/context-engine']
 
-  # 5. Build Optimization Agent
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-optimization', './backend/optimization']
-    id: 'build-optimization'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cartiq-optimization', 'backend/optimization']
+
+  # Push all images
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/cartiq-orchestrator']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/cartiq-cart-parser']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/cartiq-behavior-agent']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/cartiq-context-engine']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/cartiq-optimization']
 
 images:
   - 'gcr.io/$PROJECT_ID/cartiq-orchestrator'
@@ -30,6 +37,3 @@ images:
   - 'gcr.io/$PROJECT_ID/cartiq-behavior-agent'
   - 'gcr.io/$PROJECT_ID/cartiq-context-engine'
   - 'gcr.io/$PROJECT_ID/cartiq-optimization'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
